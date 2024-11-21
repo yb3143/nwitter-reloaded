@@ -1,8 +1,9 @@
 import styled from "styled-components";
 import { ITweet } from "./timeline";
 import { auth, db, storage } from "../firebase";
-import { deleteDoc, doc } from "firebase/firestore";
+import { deleteDoc, doc, updateDoc } from "firebase/firestore";
 import { deleteObject, ref } from "firebase/storage";
+import { useState } from "react";
 
 const Wrapper = styled.div`
   display: grid;
@@ -13,11 +14,27 @@ const Wrapper = styled.div`
   margin-bottom: 10px;
 `;
 
-const Column = styled.div``;
+const Column = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+`;
 
 const Username = styled.span`
   font-weight: 600;
   font-size: 15px;
+`;
+
+const Textarea = styled.textarea`
+  border: 1.6px solid white;
+  background-color: black;
+  resize: none;
+  border-radius: 5px;
+  min-height: 50px;
+  outline: none;
+  color: white;
+  padding: 10px;
+  width: 90%;
 `;
 
 const Payload = styled.p`
@@ -29,6 +46,11 @@ const Photo = styled.img`
   width: 100px;
   height: 100px;
   border-radius: 15px;
+`;
+
+const ButtonBox = styled.div`
+  display: flex;
+  gap: 10px;
 `;
 
 const DeleteButton = styled.button`
@@ -43,7 +65,17 @@ const DeleteButton = styled.button`
   cursor: pointer;
 `;
 
+const PostButton = styled(DeleteButton)`
+  background-color: #1d9bf9;
+`;
+
+const EditButton = styled(DeleteButton)`
+  background-color: gray;
+`;
+
 export default function Tweet({ username, photo, tweet, userId, id }: ITweet) {
+  const [content, setContent] = useState(tweet);
+  const [edit, setEdit] = useState(false);
   const user = auth.currentUser;
 
   const onDelete = async () => {
@@ -61,13 +93,46 @@ export default function Tweet({ username, photo, tweet, userId, id }: ITweet) {
     }
   };
 
+  const onEdit = async () => {
+    if (user?.uid !== userId) return;
+    try {
+      await updateDoc(doc(db, "tweets", id), { tweet: content });
+      setEdit(false);
+    } catch (e) {
+      console.error(e);
+    } finally {
+    }
+  };
+
+  const onChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setContent(e.target.value);
+  };
+
   return (
     <Wrapper>
       <Column>
         <Username>{username}</Username>
-        <Payload>{tweet}</Payload>
+        {edit ? (
+          <Textarea
+            required
+            rows={5}
+            maxLength={180}
+            onChange={onChange}
+            value={content}
+            placeholder={content}
+          />
+        ) : (
+          <Payload>{content}</Payload>
+        )}
         {user?.uid === userId ? (
-          <DeleteButton onClick={onDelete}>Delete</DeleteButton>
+          <ButtonBox>
+            {edit ? (
+              <PostButton onClick={onEdit}>Post</PostButton>
+            ) : (
+              <EditButton onClick={() => setEdit(!edit)}>Edit</EditButton>
+            )}
+            <DeleteButton onClick={onDelete}>Delete</DeleteButton>
+          </ButtonBox>
         ) : null}
       </Column>
       <Column>{photo ? <Photo src={photo} /> : null}</Column>
