@@ -11,6 +11,7 @@ const Wrapper = styled.div`
   padding: 20px;
   border: 1px solid rgba(255, 255, 255, 0.5);
   border-radius: 15px;
+  gap: 20px;
 `;
 
 const Column = styled.div`
