@@ -11,18 +11,40 @@ const Wrapper = styled.div`
   padding: 20px;
   border: 1px solid rgba(255, 255, 255, 0.5);
   border-radius: 15px;
-  margin-bottom: 10px;
 `;
 
 const Column = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+  &:last-child {
+    place-self: end;
+  }
+`;
+
+const Photo = styled.img`
+  width: 100px;
+  height: 100px;
+  border-radius: 15px;
 `;
 
 const Username = styled.span`
   font-weight: 600;
   font-size: 15px;
+`;
+
+const Payload = styled.p`
+  margin: 10px 0;
+  font-size: 18px;
+`;
+
+const DeleteButton = styled.button`
+  background-color: tomato;
+  color: white;
+  font-weight: 600;
+  border: none;
+  font-size: 12px;
+  padding: 5px 10px;
+  text-transform: uppercase;
+  border-radius: 5px;
+  cursor: pointer;
 `;
 
 const Textarea = styled.textarea`
@@ -37,32 +59,9 @@ const Textarea = styled.textarea`
   width: 90%;
 `;
 
-const Payload = styled.p`
-  margin: 10px 0;
-  font-size: 18px;
-`;
-
-const Photo = styled.img`
-  width: 100px;
-  height: 100px;
-  border-radius: 15px;
-`;
-
 const ButtonBox = styled.div`
   display: flex;
   gap: 10px;
-`;
-
-const DeleteButton = styled.button`
-  background-color: tomato;
-  color: white;
-  font-weight: 600;
-  border: none;
-  font-size: 12px;
-  padding: 5px 10px;
-  text-transform: uppercase;
-  border-radius: 5px;
-  cursor: pointer;
 `;
 
 const PostButton = styled(DeleteButton)`
